@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Price Pulse SV</title>
+  <title>Comparativa de Precios - San Miguel - PricePulse SV</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -13,8 +13,10 @@
       --primary: #2563eb;
       --dark: #1e293b;
       --light: #f8fafc;
-      --accent: #10b981;
-      --finance: #6366f1;
+      /* Colores del Semáforo de Precios */
+      --price-green: #10b981; /* Más barato */
+      --price-yellow: #f59e0b; /* Medio */
+      --price-red: #ef4444;    /* Más caro */
     }
 
     body {
@@ -24,9 +26,10 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow: hidden; /* Evita scrolls extraños en móvil */
     }
 
-    /* Pantalla de Inicio */
+    /* Pantalla de Inicio (Home) con el Logo SVG */
     #home-screen {
       display: flex;
       flex-direction: column;
@@ -38,77 +41,109 @@
       background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     }
 
-    /* Logo Minimalista */
-    .logo-container {
-      margin-bottom: 40px;
-    }
-
+    .logo-container { margin-bottom: 40px; }
     .logo-icon {
-      background: white;
-      padding: 20px;
-      border-radius: 50%;
-      display: inline-block;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-      margin-bottom: 15px;
+      background: white; padding: 20px; border-radius: 50%;
+      display: inline-block; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 15px;
     }
+    .logo-container h1 { letter-spacing: -1px; font-size: 36px; margin: 0; color: var(--dark); }
+    .badge-sv { font-size: 14px; background: #10b981; color: white; padding: 2px 8px; border-radius: 5px; vertical-align: middle; }
 
-    .logo-container h1 {
-      letter-spacing: -1px;
-      font-size: 36px;
-      margin: 0;
-      color: var(--dark);
-    }
-
-    .badge-sv {
-      font-size: 14px;
-      background: var(--accent);
-      color: white;
-      padding: 2px 8px;
-      border-radius: 5px;
-      vertical-align: middle;
-    }
-
-    /* Menú de Tarjetas */
-    .menu-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
-      width: 100%;
-      max-width: 400px;
-    }
-
+    /* Menú de Tarjetas Grandes */
+    .menu-grid { display: grid; grid-template-columns: 1fr; gap: 20px; width: 100%; max-width: 400px; }
     .menu-card {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
+      background: white; padding: 30px; border-radius: 20px;
       box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-      cursor: pointer;
-      transition: transform 0.2s;
-      border-bottom: 5px solid transparent;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+      border-bottom: 5px solid transparent; display: flex; flex-direction: column; align-items: center;
     }
-
-    .menu-card:active { transform: scale(0.95); }
-    .card-ahorro { border-color: var(--accent); }
-    .card-finanzas { border-color: var(--finance); }
-
+    .menu-card:active { transform: scale(0.95); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+    .card-ahorro { border-color: #10b981; }
+    .card-finanzas { border-color: #6366f1; }
     .menu-card i { font-size: 40px; margin-bottom: 15px; }
-    .card-ahorro i { color: var(--accent); }
-    .card-finanzas i { color: var(--finance); }
+    .card-ahorro i { color: #10b981; }
+    .card-finanzas i { color: #6366f1; }
+    .menu-card h2 { margin: 0; font-size: 20px; color: var(--dark); }
 
-    /* Secciones */
-    .content-section { display: none; height: 100vh; flex-direction: column; }
+    /* Secciones de Contenido (Ocultas inicialmente) */
+    .content-section { display: none; height: 100vh; flex-direction: column; position: relative; }
+    
+    /* Botón Volver Universal */
     .btn-back {
       position: absolute; top: 15px; left: 15px;
       background: var(--dark); color: white; border: none;
-      padding: 10px 15px; border-radius: 8px; z-index: 1000; cursor: pointer;
+      padding: 10px 15px; border-radius: 8px; z-index: 1000;
+      cursor: pointer; font-weight: 600; font-size: 14px;
+      display: flex; align-items: center; gap: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .btn-back:active { transform: scale(0.95); }
+
+    /* Contenedor del Mapa */
+    #map { flex: 1; width: 100%; z-index: 1; }
+
+    /* --- ESTILOS CRÍTICOS PARA LAS ETIQUETAS VISIBLES DEL MAPA --- */
+    /* Este es el contenedor que Leaflet creará para cada tienda */
+    .price-tag-container {
+      position: relative;
+      width: 120px; /* Ancho de la etiqueta de texto */
+      text-align: center;
     }
 
-    #map { flex: 1; width: 100%; }
-    .finance-list { padding: 80px 20px 20px; overflow-y: auto; }
-    .tip-card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    /* La etiqueta de texto que flota SOBRE el punto */
+    .price-tag-label {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 6px;
+      padding: 4px 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      border: 1px solid #e2e8f0;
+      display: inline-block;
+      position: absolute;
+      bottom: 25px; /* Eleva el texto sobre el punto */
+      left: 50%;
+      transform: translateX(-50%); /* Centra el texto */
+      white-space: nowrap; /* Evita que el texto se rompa en líneas */
+      z-index: 1001;
+    }
+
+    .price-tag-label .shop-name {
+      display: block;
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--dark);
+      margin-bottom: 2px;
+    }
+
+    .price-tag-label .product-price {
+      display: block;
+      font-weight: 800;
+      font-size: 16px; /* Precio grande */
+      color: var(--primary);
+    }
+
+    /* El punto de ubicación físico (semáforo) */
+    .price-tag-point {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+    }
+
+    /* Clases de color para el semáforo (se aplican dinámicamente) */
+    .point-green { background-color: var(--price-green); }
+    .point-yellow { background-color: var(--price-yellow); }
+    .point-red { background-color: var(--price-red); }
+
+    /* Estilos para Sección Finanzas */
+    .finance-list { padding: 80px 20px 20px; overflow-y: auto; flex: 1; }
+    .tip-card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #6366f1; }
+    .tip-card h3 { margin: 0 0 10px; color: var(--dark); display: flex; align-items: center; gap: 8px; }
   </style>
 </head>
 <body>
@@ -122,57 +157,83 @@
         </svg>
       </div>
       <h1>Price<span style="color: var(--primary);">Pulse</span> <span class="badge-sv">SV</span></h1>
-      <p style="color: #64748b; font-weight: 500;">San Miguel: Ahorra con inteligencia</p>
+      <p style="color: #64748b; font-weight: 500;">San Miguel: Tu brújula de ahorro</p>
     </div>
 
     <div class="menu-grid">
       <div class="menu-card card-ahorro" onclick="showSection('ahorro')">
-        <i class="fas fa-shopping-cart"></i>
+        <i class="fas fa-search-location"></i>
         <h2>Mapa de Ahorro</h2>
-        <small>Super Selectos y Walmart</small>
+        <small style="color: #64748b;">Compara Selectos, Walmart y Maxidespensa</small>
       </div>
+
       <div class="menu-card card-finanzas" onclick="showSection('finanzas')">
-        <i class="fas fa-chart-line"></i>
+        <i class="fas fa-seedling"></i>
         <h2>Tips Financieros</h2>
-        <small>Invierte en tu futuro</small>
+        <small style="color: #64748b;">Inversión y Consejos</small>
       </div>
     </div>
   </section>
 
   <section id="ahorro" class="content-section">
-    <button class="btn-back" onclick="goHome()"><i class="fas fa-arrow-left"></i> Volver</button>
+    <button class="btn-back" onclick="goHome()">
+      <i class="fas fa-arrow-left"></i> Volver al Menú
+    </button>
     <div id="map"></div>
   </section>
 
   <section id="finanzas" class="content-section">
-    <button class="btn-back" onclick="goHome()"><i class="fas fa-arrow-left"></i> Volver</button>
+    <button class="btn-back" onclick="goHome()">
+      <i class="fas fa-arrow-left"></i> Volver al Menú
+    </button>
     <div class="finance-list">
-      <h2 style="color: var(--dark);">Educación Financiera</h2>
+      <h2 style="color: var(--dark); text-align: center; margin-bottom: 25px;">Educación Financiera 🇸🇻</h2>
+      
       <div class="tip-card">
-        <h3>🚀 Interés Compuesto</h3>
-        <p>Hacer que tu dinero trabaje por ti es la clave. Empieza hoy, no importa la cantidad.</p>
+        <h3><i class="fas fa-chart-line" style="color: #6366f1;"></i> Interés Compuesto</h3>
+        <p>No subestimes el poder del tiempo. Invertir pequeñas cantidades mensualmente en productos regulados puede generar grandes fortunas a largo plazo.</p>
       </div>
+
       <div class="tip-card">
-        <h3>🛡️ Diversificación</h3>
-        <p>No dependas de una sola fuente. Explora diferentes opciones de inversión local.</p>
+        <h3><i class="fas fa-piggy-bank" style="color: #10b981;"></i> Regla del 50/30/20</h3>
+        <p>Destina el 50% de tus ingresos a necesidades básicas, 30% a deseos y un 20% obligatoriamente a ahorros o inversión.</p>
+      </div>
+
+      <div class="tip-card">
+        <h3><i class="fas fa-shield-alt" style="color: #f59e0b;"></i> Fondo de Emergencia</h3>
+        <p>Antes de invertir, asegúrate de tener ahorrado de 3 a 6 meses de tus gastos básicos. Esto te dará paz mental para tomar decisiones.</p>
       </div>
     </div>
   </section>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
   <script>
     function showSection(id) {
+      // Ocultar home
       document.getElementById('home-screen').style.display = 'none';
-      document.getElementById(id).style.display = 'flex';
+      // Mostrar la sección elegida
+      const section = document.getElementById(id);
+      section.style.display = 'flex';
+
+      // Si es el mapa, forzar el re-dibujado para evitar que salga gris
       if(id === 'ahorro' && typeof map !== 'undefined') {
-        setTimeout(() => map.invalidateSize(), 300);
+        setTimeout(() => {
+          map.invalidateSize();
+        }, 300); // Pequeño delay para asegurar que el DOM cargó
       }
     }
+
     function goHome() {
-      document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+      // Ocultar todas las secciones de contenido
+      document.getElementById('ahorro').style.display = 'none';
+      document.getElementById('finanzas').style.display = 'none';
+      // Mostrar el home
       document.getElementById('home-screen').style.display = 'flex';
     }
   </script>
+
   <script src="script.js"></script>
+
 </body>
 </html>
