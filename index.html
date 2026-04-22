@@ -38,20 +38,37 @@
       background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     }
 
+    /* Logo Minimalista */
     .logo-container {
       margin-bottom: 40px;
     }
 
+    .logo-icon {
+      background: white;
+      padding: 20px;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      margin-bottom: 15px;
+    }
+
     .logo-container h1 {
-      font-size: 32px;
-      color: var(--dark);
+      letter-spacing: -1px;
+      font-size: 36px;
       margin: 0;
+      color: var(--dark);
     }
 
-    .logo-container p {
-      color: #64748b;
+    .badge-sv {
+      font-size: 14px;
+      background: var(--accent);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 5px;
+      vertical-align: middle;
     }
 
+    /* Menú de Tarjetas */
     .menu-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -66,94 +83,58 @@
       border-radius: 20px;
       box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      border: 2px solid transparent;
+      transition: transform 0.2s;
+      border-bottom: 5px solid transparent;
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-decoration: none;
     }
 
-    .menu-card:active {
-      transform: scale(0.95);
-    }
+    .menu-card:active { transform: scale(0.95); }
+    .card-ahorro { border-color: var(--accent); }
+    .card-finanzas { border-color: var(--finance); }
 
-    .menu-card i {
-      font-size: 40px;
-      margin-bottom: 15px;
-    }
-
-    .card-ahorro { border-bottom: 5px solid var(--accent); }
+    .menu-card i { font-size: 40px; margin-bottom: 15px; }
     .card-ahorro i { color: var(--accent); }
-    
-    .card-finanzas { border-bottom: 5px solid var(--finance); }
     .card-finanzas i { color: var(--finance); }
 
-    .menu-card h2 {
-      margin: 0;
-      font-size: 20px;
-      color: var(--dark);
-    }
-
-    /* Secciones ocultas inicialmente */
-    .content-section {
-      display: none;
-      height: 100vh;
-      flex-direction: column;
-    }
-
-    /* Botón Volver */
+    /* Secciones */
+    .content-section { display: none; height: 100vh; flex-direction: column; }
     .btn-back {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      background: var(--dark);
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 8px;
-      z-index: 1000;
-      cursor: pointer;
+      position: absolute; top: 15px; left: 15px;
+      background: var(--dark); color: white; border: none;
+      padding: 10px 15px; border-radius: 8px; z-index: 1000; cursor: pointer;
     }
 
-    #map {
-      flex: 1;
-      width: 100%;
-    }
-
-    .finance-list {
-      padding: 60px 20px 20px 20px;
-      overflow-y: auto;
-    }
-
-    .tip-card {
-      background: white;
-      padding: 20px;
-      border-radius: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
+    #map { flex: 1; width: 100%; }
+    .finance-list { padding: 80px 20px 20px; overflow-y: auto; }
+    .tip-card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
   </style>
 </head>
 <body>
 
   <section id="home-screen">
     <div class="logo-container">
-      <h1>Price Pulse SV</h1>
-      <p>Tu guía financiera en San Miguel</p>
+      <div class="logo-icon">
+        <svg width="60" height="60" viewBox="0 0 50 50">
+          <path d="M25 5C17.8 5 12 10.8 12 18C12 27.8 25 45 25 45C25 45 38 27.8 38 18C38 10.8 32.2 5 25 5Z" fill="#2563eb"/>
+          <path d="M18 22L23 16L27 23L32 14" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1>Price<span style="color: var(--primary);">Pulse</span> <span class="badge-sv">SV</span></h1>
+      <p style="color: #64748b; font-weight: 500;">San Miguel: Ahorra con inteligencia</p>
     </div>
 
     <div class="menu-grid">
       <div class="menu-card card-ahorro" onclick="showSection('ahorro')">
-        <i class="fas fa-map-marked-alt"></i>
+        <i class="fas fa-shopping-cart"></i>
         <h2>Mapa de Ahorro</h2>
-        <small style="color: #64748b;">Compara precios locales</small>
+        <small>Super Selectos y Walmart</small>
       </div>
-
       <div class="menu-card card-finanzas" onclick="showSection('finanzas')">
-        <i class="fas fa-lightbulb"></i>
+        <i class="fas fa-chart-line"></i>
         <h2>Tips Financieros</h2>
-        <small style="color: #64748b;">Inversión y Consejos</small>
+        <small>Invierte en tu futuro</small>
       </div>
     </div>
   </section>
@@ -166,49 +147,32 @@
   <section id="finanzas" class="content-section">
     <button class="btn-back" onclick="goHome()"><i class="fas fa-arrow-left"></i> Volver</button>
     <div class="finance-list">
-      <h2 style="text-align: center;">Tips de Inversión 📈</h2>
-      
+      <h2 style="color: var(--dark);">Educación Financiera</h2>
       <div class="tip-card">
-        <h3>Interés Compuesto</h3>
-        <p>Invertir temprano es más importante que invertir mucho. El tiempo es tu mejor aliado.</p>
+        <h3>🚀 Interés Compuesto</h3>
+        <p>Hacer que tu dinero trabaje por ti es la clave. Empieza hoy, no importa la cantidad.</p>
       </div>
-
       <div class="tip-card">
-        <h3>Regla del 50/30/20</h3>
-        <p>50% Necesidades, 30% Deseos y 20% Ahorro/Inversión.</p>
-      </div>
-
-      <div class="tip-card">
-        <h3>Fondo de Emergencia</h3>
-        <p>Antes de invertir, guarda al menos 3 meses de tus gastos básicos.</p>
+        <h3>🛡️ Diversificación</h3>
+        <p>No dependas de una sola fuente. Explora diferentes opciones de inversión local.</p>
       </div>
     </div>
   </section>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
   <script>
     function showSection(id) {
       document.getElementById('home-screen').style.display = 'none';
-      const section = document.getElementById(id);
-      section.style.display = 'flex';
-
-      if(id === 'ahorro') {
-        // Inicializar o refrescar el mapa
-        setTimeout(() => {
-          map.invalidateSize();
-        }, 300);
+      document.getElementById(id).style.display = 'flex';
+      if(id === 'ahorro' && typeof map !== 'undefined') {
+        setTimeout(() => map.invalidateSize(), 300);
       }
     }
-
     function goHome() {
-      document.getElementById('ahorro').style.display = 'none';
-      document.getElementById('finanzas').style.display = 'none';
+      document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
       document.getElementById('home-screen').style.display = 'flex';
     }
   </script>
-
   <script src="script.js"></script>
-
 </body>
 </html>
