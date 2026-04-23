@@ -7,105 +7,133 @@
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script src="https://d3js.org/d3.v7.min.js"></script>
 
   <style>
+    /* VARIABLES MINIMALISTAS */
     :root {
-      --primary: #2563eb;
-      --dark: #1e293b;
-      --light: #f8fafc;
-      --accent: #10b981;
-      --finance: #6366f1;
+      --bg-color: #ffffff;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border-color: #e5e7eb;
+      --accent-blue: #2563eb;
+      --accent-green: #10b981;
     }
 
-    body, html {
-      margin: 0; padding: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: var(--light);
-      height: 100vh; width: 100vw;
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
     }
 
-    /* Pantalla de Inicio Interactiva */
+    /* PANTALLA DE INICIO MINIMALISTA */
     #home-screen {
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      background: radial-gradient(circle at center, #ffffff 0%, #e2e8f0 100%);
-      position: relative;
-    }
-
-    .header-home {
-      padding: 30px;
-      text-align: center;
-      z-index: 10;
-      pointer-events: none; /* Deja que los clics pasen al SVG */
-    }
-
-    /* Contenedor del Menú D3 */
-    #interactive-menu {
+      align-items: center;
+      justify-content: center;
       flex: 1;
-      width: 100%;
-      cursor: grab;
+      padding: 20px;
+      text-align: center;
     }
 
-    #interactive-menu:active { cursor: grabbing; }
-
-    /* Estilos de los Nodos Interactivos */
-    .node-circle {
-      stroke: #fff;
-      stroke-width: 3px;
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-      transition: r 0.3s ease;
+    .logo-container { margin-bottom: 40px; }
+    .logo-container h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin: 0; }
+    .logo-container p { color: var(--text-muted); font-size: 15px; margin-top: 8px; }
+    
+    .badge-sv {
+      font-size: 12px; font-weight: 600;
+      background: var(--text-main); color: white;
+      padding: 2px 6px; border-radius: 4px; vertical-align: super;
     }
 
-    .node-label {
-      font-weight: bold;
-      pointer-events: none;
-      fill: var(--dark);
-      font-size: 14px;
-      text-anchor: middle;
+    /* BOTONES DEL MENÚ PRINCIPAL */
+    .menu-grid { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 320px; }
+    
+    .btn-minimal {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 16px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
     }
 
-    /* Secciones de Contenido */
-    .content-section {
-      display: none;
-      height: 100vh;
-      width: 100vw;
-      flex-direction: column;
-      position: fixed;
-      top: 0; left: 0;
-      background: white;
-      z-index: 100;
-    }
+    .btn-minimal:hover { border-color: var(--text-main); }
+    .btn-minimal i { font-size: 18px; color: var(--text-muted); }
 
+    /* SECCIONES OCULTAS */
+    .content-section { display: none; height: 100vh; flex-direction: column; position: relative; }
+    
+    /* BOTÓN DE VOLVER (Muy sutil) */
     .btn-back {
       position: absolute; top: 20px; left: 20px;
-      background: var(--dark); color: white; border: none;
-      padding: 12px 20px; border-radius: 50px; z-index: 1001;
-      cursor: pointer; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      background: white; color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 8px 16px; border-radius: 6px;
+      font-size: 14px; font-weight: 500; cursor: pointer; z-index: 1000;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
+    .btn-back:hover { background: #f9fafb; }
 
+    /* MAPA */
     #map { flex: 1; width: 100%; }
-    .finance-list { padding: 90px 20px 20px; overflow-y: auto; }
-    .tip-card { 
-      background: white; padding: 20px; border-radius: 15px; 
-      margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-      border-left: 5px solid var(--finance);
-    }
+
+    /* LISTA DE FINANZAS (Estilo Documento Limpio) */
+    .finance-list { padding: 80px 20px 40px; overflow-y: auto; max-width: 600px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+    .finance-list h2 { font-size: 24px; font-weight: 700; margin-bottom: 30px; text-align: center; }
+    .finance-list h4 { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
     
-    .broker-link { color: var(--finance); font-weight: bold; text-decoration: none; }
+    .minimal-card { margin-bottom: 24px; }
+    .minimal-card h3 { font-size: 16px; margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px; }
+    .minimal-card p { font-size: 15px; color: #4b5563; line-height: 1.6; margin: 0; }
+    .minimal-card ul { margin: 10px 0 0 0; padding-left: 20px; color: #4b5563; font-size: 15px; line-height: 1.6; }
+    .broker-link { color: var(--accent-blue); text-decoration: none; font-weight: 500; }
+    .broker-link:hover { text-decoration: underline; }
+
+    .risk-note { background: #f9fafb; border: 1px solid var(--border-color); padding: 16px; border-radius: 8px; margin-top: 40px; }
+    .risk-note p { font-size: 13px; color: var(--text-muted); margin: 0; }
+
+    /* ESTILOS DEL MAPA (Tooltips) */
+    .transparent-tooltip { background: transparent !important; border: none !important; box-shadow: none !important; }
+    .transparent-tooltip::before { display: none !important; }
+    .custom-tooltip { padding: 4px 8px; border-radius: 6px; color: white; text-align: center; font-family: sans-serif; box-shadow: 0 2px 4px rgba(0,0,0,0.2); min-width: 90px; }
+    .price-low { background-color: var(--accent-green) !important; }
+    .price-mid { background-color: #f59e0b !important; }
+    .price-high { background-color: #ef4444 !important; }
+    .custom-tooltip b { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .custom-tooltip span { font-size: 13px; font-weight: bold; }
   </style>
 </head>
 <body>
 
   <section id="home-screen">
-    <div class="header-home">
-      <h1 style="margin:0; font-size: 2.5rem; color: var(--dark);">Price<span style="color:var(--primary)">Pulse</span> SV</h1>
-      <p style="color: #64748b;">Explora tocando los círculos flotantes</p>
+    <div class="logo-container">
+      <h1>PricePulse<span class="badge-sv">SV</span></h1>
+      <p>Tu brújula financiera en San Miguel</p>
     </div>
-    
-    <svg id="interactive-menu"></svg>
+
+    <div class="menu-grid">
+      <button class="btn-minimal" onclick="showSection('ahorro')">
+        <span>Mapa de Ahorro</span>
+        <i class="fas fa-map-pin"></i>
+      </button>
+      
+      <button class="btn-minimal" onclick="showSection('finanzas')">
+        <span>Guía de Inversión</span>
+        <i class="fas fa-chart-line"></i>
+      </button>
+    </div>
   </section>
 
   <section id="ahorro" class="content-section">
@@ -115,26 +143,41 @@
 
   <section id="finanzas" class="content-section">
     <button class="btn-back" onclick="goHome()"><i class="fas fa-arrow-left"></i> Volver</button>
+    
     <div class="finance-list">
-      <h2 style="text-align: center; margin-bottom: 30px;">Guía de Inversión 🇸🇻</h2>
+      <h2>Guía de Inversión</h2>
       
-      <div class="tip-card">
-        <h3><i class="fas fa-university"></i> Plazo Fijo & Cooperativas</h3>
-        <p>Opciones locales seguras en San Miguel como <b>Cuscatlán, Agrícola</b> o cooperativas como <b>COASPAE</b>.</p>
+      <h4>Opciones Locales (El Salvador)</h4>
+      
+      <div class="minimal-card">
+        <h3><i class="fas fa-university" style="color: #6b7280;"></i> Depósitos a Plazo Fijo</h3>
+        <p>Ideal para perfiles conservadores. Bancos como <b>Cuscatlán, Agrícola o Davivienda</b> ofrecen tasas anuales que suelen rondar entre el 4% y 6%, dependiendo del monto y el tiempo.</p>
       </div>
 
-      <div class="tip-card">
-        <h3><i class="fas fa-globe"></i> Brokers Internacionales</h3>
-        <p>Invierte en la bolsa de valores de EE.UU. a través de:</p>
-        <ul style="line-height: 2;">
-          <li><a href="https://hapi.trade/" target="_blank" class="broker-link">Hapi</a> (Ideal para latinos)</li>
-          <li><a href="https://www.xtb.com/" target="_blank" class="broker-link">XTB</a></li>
-          <li><a href="https://www.interactivebrokers.com/" target="_blank" class="broker-link">Interactive Brokers</a></li>
+      <div class="minimal-card">
+        <h3><i class="fas fa-users" style="color: #6b7280;"></i> Cooperativas</h3>
+        <p>Instituciones como <b>ACACESVG o COASPAE</b> suelen ofrecer tasas más competitivas que los bancos tradicionales (hasta 7-8% en depósitos a plazo). Requieren que te hagas socio.</p>
+      </div>
+
+      <div class="minimal-card">
+        <h3><i class="fas fa-landmark" style="color: #6b7280;"></i> Mercado Bursátil Local</h3>
+        <p>A través de la <b>Bolsa de Valores de El Salvador (BVES)</b>, puedes invertir en fondos de inversión inmobiliarios o títulos valores de empresas nacionales con montos accesibles.</p>
+      </div>
+
+      <h4>Inversión Internacional</h4>
+
+      <div class="minimal-card">
+        <h3><i class="fas fa-globe" style="color: #6b7280;"></i> Mercado Bursátil Extranjero</h3>
+        <p>Accede a las empresas más grandes del mundo (Apple, Google, Amazon) y ETFs usando brokers regulados:</p>
+        <ul>
+          <li><a href="https://hapi.trade/es" target="_blank" class="broker-link">Hapi:</a> Ideal para latinos, sin comisiones y permite comprar acciones fraccionadas.</li>
+          <li><a href="https://www.xtb.com/lat" target="_blank" class="broker-link">XTB:</a> Muy bueno para análisis técnico y con una plataforma robusta.</li>
+          <li><a href="https://www.interactivebrokers.com/" target="_blank" class="broker-link">Interactive Brokers:</a> El más completo a nivel mundial, ideal para inversores serios y de largo plazo.</li>
         </ul>
       </div>
-      
-      <div style="background: #fee2e2; padding: 15px; border-radius: 10px; color: #991b1b; font-size: 0.9rem;">
-        <b>Aviso:</b> Toda inversión conlleva riesgos. Infórmate bien.
+
+      <div class="risk-note">
+        <p><b>Nota de Riesgo:</b> Toda inversión conlleva riesgo. Investiga a fondo y nunca inviertas dinero destinado para tus necesidades vitales o emergencias.</p>
       </div>
     </div>
   </section>
@@ -145,7 +188,7 @@
       document.getElementById('home-screen').style.display = 'none';
       document.getElementById(id).style.display = 'flex';
       if(id === 'ahorro' && typeof map !== 'undefined') {
-        setTimeout(() => map.invalidateSize(), 400);
+        setTimeout(() => map.invalidateSize(), 300);
       }
     }
     function goHome() {
@@ -154,5 +197,6 @@
     }
   </script>
   <script src="script.js"></script>
+
 </body>
 </html>
