@@ -67,7 +67,7 @@
     .btn-back {
       position: absolute; top: 15px; left: 15px;
       background: var(--dark); color: white; border: none;
-      padding: 10px 15px; border-radius: 8px; z-index: 1000; cursor: pointer;
+      padding: 10px 15px; border-radius: 8px; z-index: 1000; cursor: pointer; font-weight: bold;
     }
 
     #map { flex: 1; width: 100%; }
@@ -75,7 +75,7 @@
     .tip-card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
 
     /* ========================================== */
-    /* ESTILOS PERSONALIZADOS PARA LAS ETIQUETAS */
+    /* ESTILOS PERSONALIZADOS PARA LAS ETIQUETAS DEL MAPA */
     /* ========================================== */
     
     .transparent-tooltip {
@@ -113,6 +113,14 @@
       font-size: 14px;
       font-weight: bold;
     }
+
+    /* Enlaces a Brokers */
+    .broker-link {
+      color: var(--finance);
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .broker-link:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -150,11 +158,42 @@
 
   <section id="finanzas" class="content-section">
     <button class="btn-back" onclick="goHome()"><i class="fas fa-arrow-left"></i> Volver</button>
+    
     <div class="finance-list">
-      <h2 style="color: var(--dark);">Educación Financiera</h2>
-      <div class="tip-card">
-        <h3>🚀 Interés Compuesto</h3>
-        <p>El tiempo es tu mayor activo al invertir.</p>
+      <h2 style="color: var(--dark); text-align: center; margin-bottom: 25px;">Guía de Inversión 🇸🇻</h2>
+      
+      <h4 style="color: var(--primary); text-transform: uppercase; font-size: 12px; margin-bottom: 10px;">Opciones Locales (El Salvador)</h4>
+      
+      <div class="tip-card" style="border-left: 5px solid #2563eb;">
+        <h3><i class="fas fa-university" style="color: #2563eb;"></i> Depósitos a Plazo Fijo</h3>
+        <p>Ideal para perfiles conservadores. Los bancos comerciales ofrecen tasas anuales seguras dependiendo del monto y el tiempo pactado.</p>
+      </div>
+
+      <div class="tip-card" style="border-left: 5px solid #10b981;">
+        <h3><i class="fas fa-users" style="color: #10b981;"></i> Cooperativas</h3>
+        <p>Instituciones de ahorro y crédito suelen ofrecer tasas más competitivas que la banca tradicional para sus socios activos.</p>
+      </div>
+
+      <div class="tip-card" style="border-left: 5px solid #f59e0b;">
+        <h3><i class="fas fa-landmark" style="color: #f59e0b;"></i> Mercado Bursátil Local</h3>
+        <p>A través de la <b>Bolsa de Valores de El Salvador (BVES)</b>, puedes invertir en fondos de inversión inmobiliarios o títulos de empresas nacionales.</p>
+      </div>
+
+      <h4 style="color: var(--finance); text-transform: uppercase; font-size: 12px; margin-top: 30px; margin-bottom: 10px;">Inversión Internacional</h4>
+
+      <div class="tip-card" style="border-left: 5px solid var(--finance);">
+        <h3><i class="fas fa-globe" style="color: var(--finance);"></i> Mercado Bursátil Extranjero</h3>
+        <p>Accede a las empresas más grandes del mundo (Apple, Google, Amazon) y fondos indexados usando Brokers regulados:</p>
+        <ul style="margin-top: 15px; color: #475569; font-size: 14px; padding-left: 20px; line-height: 1.8;">
+          <li><a href="https://hapi.trade/es" target="_blank" class="broker-link">Hapi:</a> Ideal para iniciar, sin comisiones y permite comprar acciones fraccionadas.</li>
+          <li><a href="https://www.xtb.com/lat" target="_blank" class="broker-link">XTB:</a> Excelente plataforma gráfica y análisis técnico robusto.</li>
+          <li><a href="https://www.interactivebrokers.com/" target="_blank" class="broker-link">Interactive Brokers:</a> De los más completos a nivel mundial, ideal para inversores a largo plazo.</li>
+        </ul>
+      </div>
+
+      <div class="tip-card" style="background: var(--dark); color: white; margin-top: 30px; border-left: none;">
+        <h3 style="color: white;"><i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i> Nota de Riesgo</h3>
+        <p style="color: #cbd5e1; font-size: 14px;">Toda inversión conlleva riesgo. Investiga a fondo y nunca inviertas dinero destinado para tus necesidades vitales o emergencias.</p>
       </div>
     </div>
   </section>
