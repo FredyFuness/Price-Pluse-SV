@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PricePlus SV - Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    padding:20px;
+}
+
+.card{
+    width:100%;
+    max-width:420px;
+    background:#fff;
+    border-radius:20px;
+    padding:40px;
+    box-shadow:0 25px 50px rgba(0,0,0,.25);
+    text-align:center;
+}
+
+.logo{
+    width:80px;
+    height:80px;
+    margin:0 auto 20px;
+    border-radius:16px;
+    background:#2563eb;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+    font-weight:bold;
+}
+
+h1{
+    color:#0f172a;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#64748b;
+    margin-bottom:30px;
+    font-size:14px;
+}
+
+.google-btn{
+    width:100%;
+    border:none;
+    background:#fff;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    padding:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.google-btn:hover{
+    background:#f8fafc;
+    transform:translateY(-2px);
+}
+
+.google-icon{
+    width:22px;
+    height:22px;
+}
+
+.status{
+    margin-top:20px;
+    font-size:14px;
+    color:#475569;
+}
+
+.user-box{
+    display:none;
+    margin-top:25px;
+}
+
+.user-box img{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    margin-bottom:10px;
+}
+
+.logout-btn{
+    margin-top:15px;
+    background:#ef4444;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.footer{
+    margin-top:25px;
+    color:#94a3b8;
+    font-size:12px;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+    <div class="logo">P+</div>
+
+    <h1>PricePlus SV</h1>
+
+    <p class="subtitle">
+        Inicia sesión para acceder al sistema
+    </p>
+
+    <button class="google-btn" id="googleLogin">
+
+        <svg class="google-icon" viewBox="0 0 48 48">
+            <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.654 32.657 29.203 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+            <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+            <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.143 35.091 26.715 36 24 36c-5.182 0-9.625-3.329-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+            <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.042 12.042 0 01-4.084 5.57l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+        </svg>
+
+        Continuar con Google
+
+    </button>
+
+    <div class="status" id="status">
+        Esperando autenticación...
+    </div>
+
+    <div class="user-box" id="userBox">
+        <img id="userPhoto">
+        <h3 id="userName"></h3>
+        <p id="userEmail"></p>
+
+        <button class="logout-btn" id="logoutBtn">
+            Cerrar sesión
+        </button>
+    </div>
+
+    <div class="footer">
+        © 2026 PricePlus SV
+    </div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDUpRungMl6Qt-AwatwnjRfMWtOmHZm_7Q",
+    authDomain: "priceplusesv.firebaseapp.com",
+    projectId: "priceplusesv",
+    storageBucket: "priceplusesv.firebasestorage.app",
+    messagingSenderId: "802853058185",
+    appId: "1:802853058185:web:6f7b62a86c20fdc7863858",
+    measurementId: "G-199TDMEDXV"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+const loginBtn = document.getElementById("googleLogin");
+const logoutBtn = document.getElementById("logoutBtn");
+
+// Login Google
+loginBtn.addEventListener("click", async () => {
+
+    try {
+
+        document.getElementById("status").innerText =
+        "Iniciando sesión...";
+
+        await signInWithPopup(auth, provider);
+
+        // Redirección inmediata
+        window.location.href = "index.html";
+
+    } catch(error) {
+
+        console.error(error);
+
+        document.getElementById("status").innerText =
+        "Error: " + error.message;
+
+    }
+
+});
+
+// Cerrar sesión
+logoutBtn.addEventListener("click", async () => {
+
+    try {
+
+        await signOut(auth);
+
+        document.getElementById("status").innerText =
+        "Sesión cerrada";
+
+    } catch(error) {
+
+        console.error(error);
+
+    }
+
+});
+
+// Verificar sesión existente
+onAuthStateChanged(auth, (user) => {
+
+    if(user){
+
+        document.getElementById("status").style.display = "none";
+        document.getElementById("userBox").style.display = "block";
+
+        document.getElementById("userName").innerText =
+        user.displayName || "Usuario";
+
+        document.getElementById("userEmail").innerText =
+        user.email || "";
+
+        document.getElementById("userPhoto").src =
+        user.photoURL || "";
+
+        // Si estás en login.html y ya existe sesión,
+        // enviarlo automáticamente al inicio
+        if(
+            window.location.pathname
+            .toLowerCase()
+            .includes("login.html")
+        ){
+            window.location.href = "index.html";
+        }
+
+    }else{
+
+        document.getElementById("status").style.display = "block";
+        document.getElementById("userBox").style.display = "none";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

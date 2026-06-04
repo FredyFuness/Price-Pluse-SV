@@ -73,17 +73,23 @@
     .btn-minimal i { font-size: 18px; color: var(--text-muted); }
 
     /* SECCIONES OCULTAS */
-    .content-section { display: none; height: 100vh; flex-direction: column; position: relative; }
+    .content-section { padding-top: 65px; display: none; height: 100vh; flex-direction: column; position: relative; }
     
     /* BOTÓN DE VOLVER (Muy sutil) */
     .btn-back {
-      position: absolute; top: 20px; left: 20px;
-      background: white; color: var(--text-main);
-      border: 1px solid var(--border-color);
-      padding: 8px 16px; border-radius: 6px;
-      font-size: 14px; font-weight: 500; cursor: pointer; z-index: 1000;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
+    position: absolute;
+    top: 75px;
+    left: 20px;
+    background: white;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    z-index: 1001;
+}
     .btn-back:hover { background: #f9fafb; }
 
     /* MAPA */
@@ -113,16 +119,106 @@
     .price-high { background-color: #ef4444 !important; }
     .custom-tooltip b { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
     .custom-tooltip span { font-size: 13px; font-weight: bold; }
+    /* HEADER */
+
+#topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:65px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 20px;
+  z-index:9999;
+}
+
+.brand{
+  font-size:18px;
+  font-weight:700;
+}
+
+.user-area{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+#userPhoto{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  object-fit:cover;
+  display:none;
+}
+
+.user-data{
+  display:flex;
+  flex-direction:column;
+  text-align:right;
+}
+
+#userName{
+  font-size:14px;
+  font-weight:600;
+}
+
+#userStatus{
+  font-size:12px;
+  color:#6b7280;
+}
+
+#logoutBtn{
+  display:none;
+  border:none;
+  background:#ef4444;
+  color:white;
+  width:36px;
+  height:36px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* Separación para que no tape el contenido */
+
+#home-screen{
+  padding-top:90px !important;
+}
+
+.content-section{
+  padding-top:65px;
+}
   </style>
 </head>
 <body>
+  <header id="topbar">
+  <div class="brand">
+    <strong>PricePulse SV</strong>
+  </div>
+
+  <div class="user-area">
+    <img id="userPhoto" src="" alt="Usuario">
+
+    <div class="user-data">
+      <span id="userName">Invitado</span>
+      <small id="userStatus">No autenticado</small>
+    </div>
+
+    <button id="logoutBtn" onclick="logout()">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </div>
+</header>
 
   <section id="home-screen">
     <div class="logo-container">
       <h1>PricePulse<span class="badge-sv">SV</span></h1>
       <p>Tu brújula financiera en San Miguel</p>
     </div>
-
+    
     <div class="menu-grid">
       <button class="btn-minimal" onclick="showSection('ahorro')">
         <span>Mapa de Ahorro</span>
@@ -133,6 +229,15 @@
         <span>Guía de Inversión</span>
         <i class="fas fa-chart-line"></i>
       </button>
+
+      <button id="loginBtn"
+        class="btn-minimal"
+        onclick="window.location.href='login.html'">
+
+  <span>Acceder</span>
+  <i class="fas fa-sign-in-alt"></i>
+
+</button>
     </div>
   </section>
 
@@ -197,6 +302,81 @@
     }
   </script>
   <script src="script.js"></script>
+  <script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDUpRungMl6Qt-AwatwnjRfMWtOmHZm_7Q",
+  authDomain: "priceplusesv.firebaseapp.com",
+  projectId: "priceplusesv",
+  storageBucket: "priceplusesv.firebasestorage.app",
+  messagingSenderId: "802853058185",
+  appId: "1:802853058185:web:6f7b62a86c20fdc7863858"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth, (user) => {
+
+  if(user){
+
+    document.getElementById("userPhoto").src =
+      user.photoURL || "";
+
+    document.getElementById("userPhoto").style.display =
+      "block";
+
+    document.getElementById("userName").textContent =
+      user.displayName || "Usuario";
+
+    document.getElementById("userStatus").textContent =
+      user.email || "";
+
+    document.getElementById("logoutBtn").style.display =
+      "block";
+
+    const loginBtn =
+      document.getElementById("loginBtn");
+
+    if(loginBtn){
+      loginBtn.style.display = "none";
+    }
+
+  }else{
+
+    document.getElementById("userPhoto").style.display =
+      "none";
+
+    document.getElementById("userName").textContent =
+      "Invitado";
+
+    document.getElementById("userStatus").textContent =
+      "No autenticado";
+
+    document.getElementById("logoutBtn").style.display =
+      "none";
+
+  }
+
+});
+
+window.logout = async () => {
+
+  await signOut(auth);
+
+  location.reload();
+
+};
+
+</script>
 
 </body>
 </html>
