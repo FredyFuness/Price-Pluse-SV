@@ -6,7 +6,7 @@ const tiendas = [
   { id: "walmart",    nombre: "Walmart",           lat: 13.4511, lng: -88.1596 },
   { id: "selectos",   nombre: "Super Selectos",    lat: 13.4793, lng: -88.1779 },
   { id: "despensa",   nombre: "Despensa Don Juan", lat: 13.4825, lng: -88.1803 },
-  { id: "pricesmart", nombre: "PriceSmart",        lat: 13.4863, lng: -88.1617 },
+  { id: "pricesmart", nombre: "PriceSmart",        lat: 13.5045, lng: -88.2288 },
   { id: "josue",      nombre: "Comercial Josué",   lat: 13.4803, lng: -88.1786 }
 ];
 
@@ -76,7 +76,7 @@ const categorias = ["Canasta Básica", "Lácteos y Frescos", "Higiene", "Electr�
 // MAPA
 // ==========================================
 
-var map = L.map('map', { zoomControl: false }).setView([13.478, -88.178], 14);
+var map = L.map('map', { zoomControl: false }).setView([13.490, -88.195], 13);
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
