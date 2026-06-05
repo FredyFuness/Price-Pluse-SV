@@ -9,308 +9,428 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
   <style>
-    /* VARIABLES MINIMALISTAS */
     :root {
-      --bg-color: #ffffff;
-      --text-main: #111827;
-      --text-muted: #6b7280;
-      --border-color: #e5e7eb;
-      --accent-blue: #2563eb;
-      --accent-green: #10b981;
+      --bg: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --blue: #2563eb;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --radius: 10px;
     }
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       height: 100vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
+    body.map-open { overflow: auto; height: auto; }
 
-    /* PANTALLA DE INICIO MINIMALISTA */
-    #home-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      padding: 20px;
-      text-align: center;
+    /* ── TOPBAR ─────────────────────────────── */
+    #topbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 60px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 20px;
+      z-index: 9999;
+    }
+    .brand { font-size: 18px; font-weight: 700; }
+    .user-area { display: flex; align-items: center; gap: 10px; }
+    #userPhoto { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; display: none; }
+    .user-data { display: flex; flex-direction: column; text-align: right; }
+    #userName   { font-size: 13px; font-weight: 600; }
+    #userStatus { font-size: 11px; color: var(--muted); }
+    #logoutBtn  {
+      display: none; border: none; background: var(--red); color: white;
+      width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 14px;
     }
 
+    /* ── HOME ───────────────────────────────── */
+    #home-screen {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      flex: 1; padding: 90px 20px 40px; text-align: center;
+    }
     .logo-container { margin-bottom: 40px; }
-    .logo-container h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin: 0; }
-    .logo-container p { color: var(--text-muted); font-size: 15px; margin-top: 8px; }
-    
+    .logo-container h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
+    .logo-container p  { color: var(--muted); font-size: 15px; margin-top: 8px; }
     .badge-sv {
       font-size: 12px; font-weight: 600;
-      background: var(--text-main); color: white;
+      background: var(--text); color: white;
       padding: 2px 6px; border-radius: 4px; vertical-align: super;
     }
-
-    /* BOTONES DEL MENÚ PRINCIPAL */
-    .menu-grid { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 320px; }
-    
+    .menu-grid { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 320px; }
     .btn-minimal {
-      background: transparent;
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 16px 24px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: all 0.2s ease;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text); padding: 16px 20px; border-radius: var(--radius);
+      font-size: 15px; font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: border-color 0.2s;
     }
+    .btn-minimal:hover { border-color: var(--text); }
+    .btn-minimal i { color: var(--muted); }
 
-    .btn-minimal:hover { border-color: var(--text-main); }
-    .btn-minimal i { font-size: 18px; color: var(--text-muted); }
-
-    /* SECCIONES OCULTAS */
-    .content-section { padding-top: 65px; display: none; height: 100vh; flex-direction: column; position: relative; }
-    
-    /* BOTÓN DE VOLVER (Muy sutil) */
+    /* ── SECCIONES ──────────────────────────── */
+    .content-section {
+      padding-top: 60px;
+      display: none; height: 100vh; flex-direction: column;
+      position: relative;
+    }
     .btn-back {
-    position: absolute;
-    top: 75px;
-    left: 20px;
-    background: white;
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    z-index: 1001;
-}
+      position: absolute; top: 68px; left: 16px;
+      background: white; color: var(--text);
+      border: 1px solid var(--border);
+      padding: 7px 14px; border-radius: 7px;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      z-index: 1001;
+    }
     .btn-back:hover { background: #f9fafb; }
 
-    /* MAPA */
-    #map { flex: 1; width: 100%; }
+    /* ── SECCIÓN AHORRO (layout) ─────────────── */
+    #ahorro {
+      flex-direction: row;
+      overflow: hidden;
+      min-height: 0;
+    }
 
-    /* LISTA DE FINANZAS (Estilo Documento Limpio) */
-    .finance-list { padding: 80px 20px 40px; overflow-y: auto; max-width: 600px; margin: 0 auto; width: 100%; box-sizing: border-box; }
-    .finance-list h2 { font-size: 24px; font-weight: 700; margin-bottom: 30px; text-align: center; }
-    .finance-list h4 { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
-    
-    .minimal-card { margin-bottom: 24px; }
-    .minimal-card h3 { font-size: 16px; margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px; }
-    .minimal-card p { font-size: 15px; color: #4b5563; line-height: 1.6; margin: 0; }
-    .minimal-card ul { margin: 10px 0 0 0; padding-left: 20px; color: #4b5563; font-size: 15px; line-height: 1.6; }
-    .broker-link { color: var(--accent-blue); text-decoration: none; font-weight: 500; }
+    /* ── COLUMNA IZQUIERDA: BÚSQUEDA + PANEL ── */
+    #sidebar {
+      width: 320px;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 70px 16px 20px;
+      gap: 14px;
+    }
+
+    /* ── SEARCH BOX ─────────────────────────── */
+    #search-box { position: relative; }
+    #search-input {
+      width: 100%;
+      padding: 11px 14px 11px 38px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      font-size: 14px; outline: none;
+      transition: border-color 0.2s;
+    }
+    #search-input:focus { border-color: var(--blue); }
+    .search-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); font-size: 14px;
+    }
+    #suggestions {
+      display: none;
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+      background: white; border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: 0 8px 24px rgba(0,0,0,.1);
+      z-index: 2000; max-height: 260px; overflow-y: auto;
+    }
+    .suggestion-item {
+      padding: 10px 14px; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover { background: #f9fafb; }
+    .sug-nombre { font-size: 13px; font-weight: 500; }
+    .sug-cat    { font-size: 11px; color: var(--muted); }
+
+    /* ── CHIPS DE CATEGORÍA ─────────────────── */
+    .chips-wrap {
+      display: flex; flex-wrap: wrap; gap: 7px;
+    }
+    .cat-chip {
+      padding: 5px 12px; border-radius: 20px;
+      border: 1px solid var(--border);
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      background: white; color: var(--muted);
+      transition: all 0.2s;
+    }
+    .cat-chip:hover  { border-color: var(--text); color: var(--text); }
+    .cat-chip.active { background: var(--text); color: white; border-color: var(--text); }
+
+    /* ── ESTADO VACÍO ───────────────────────── */
+    #empty-state {
+      text-align: center; padding: 30px 10px;
+      color: var(--muted);
+    }
+    #empty-state .empty-icon { font-size: 36px; margin-bottom: 10px; }
+    #empty-state p { font-size: 13px; line-height: 1.5; }
+
+    /* ── PANEL COMPARATIVO ──────────────────── */
+    #compare-panel { display: none; }
+
+    .panel-header { margin-bottom: 12px; }
+    .panel-tag {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--blue);
+    }
+    .panel-header h3 { font-size: 16px; font-weight: 700; margin: 4px 0 8px; }
+    .savings-msg {
+      font-size: 12px; color: #374151;
+      background: #f0fdf4; border: 1px solid #bbf7d0;
+      padding: 8px 10px; border-radius: 7px; line-height: 1.4;
+    }
+
+    .table-wrap { overflow-x: auto; }
+    .compare-table {
+      width: 100%; border-collapse: collapse; font-size: 13px;
+    }
+    .compare-table th {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--muted);
+      padding: 8px 6px; border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    .compare-table td { padding: 9px 6px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table .row-best td { background: #f0fdf4; font-weight: 600; }
+    .td-price { font-weight: 700; font-size: 14px; }
+    .td-diff  { font-size: 12px; color: var(--muted); }
+    .compare-table .row-best .td-diff { color: var(--green); }
+    .btn-map-link {
+      text-decoration: none; font-size: 16px;
+      transition: transform 0.15s;
+    }
+    .btn-map-link:hover { transform: scale(1.2); }
+    .no-disp {
+      font-size: 11px; color: var(--muted);
+      margin-top: 8px; font-style: italic;
+    }
+
+    /* ── MAPA ───────────────────────────────── */
+    #map-wrap {
+      flex: 1;
+      position: relative;
+    }
+    #map { width: 100%; height: 100%; }
+
+    /* ── LEYENDA ─────────────────────────────── */
+    .leyenda {
+      position: absolute; bottom: 40px; left: 10px;
+      background: white; border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px; z-index: 1000;
+      font-size: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .leyenda div { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
+    .leyenda div:last-child { margin-bottom: 0; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── LEAFLET TOOLTIPS ───────────────────── */
+    .transparent-tooltip { background:transparent!important; border:none!important; box-shadow:none!important; }
+    .transparent-tooltip::before { display:none!important; }
+    .custom-tooltip {
+      padding: 4px 8px; border-radius: 6px; color: white;
+      text-align: center; font-family: sans-serif;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2); min-width: 90px;
+    }
+    .custom-tooltip b    { display:block; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; }
+    .custom-tooltip span { font-size:13px; font-weight:bold; }
+    .price-low     { background-color: var(--green)!important; }
+    .price-mid     { background-color: var(--yellow)!important; }
+    .price-high    { background-color: var(--red)!important; }
+    .price-neutral { background-color: #9ca3af!important; }
+
+    /* ── FINANZAS ───────────────────────────── */
+    .finance-list {
+      padding: 80px 20px 40px; overflow-y: auto;
+      max-width: 600px; margin: 0 auto; width: 100%;
+    }
+    .finance-list h2 { font-size: 22px; font-weight: 700; margin-bottom: 28px; text-align:center; }
+    .finance-list h4 {
+      color: var(--muted); font-size: 11px; text-transform: uppercase;
+      letter-spacing: 1px; margin-top: 28px; margin-bottom: 14px;
+      border-bottom: 1px solid var(--border); padding-bottom: 7px;
+    }
+    .minimal-card { margin-bottom: 22px; }
+    .minimal-card h3 { font-size: 15px; margin: 0 0 7px; display:flex; align-items:center; gap:8px; }
+    .minimal-card p  { font-size: 14px; color: #4b5563; line-height: 1.6; }
+    .minimal-card ul { margin:9px 0 0; padding-left:18px; color:#4b5563; font-size:14px; line-height:1.7; }
+    .broker-link { color: var(--blue); text-decoration: none; font-weight: 500; }
     .broker-link:hover { text-decoration: underline; }
+    .risk-note {
+      background:#f9fafb; border:1px solid var(--border);
+      padding:14px; border-radius:8px; margin-top:36px;
+    }
+    .risk-note p { font-size:12px; color:var(--muted); }
 
-    .risk-note { background: #f9fafb; border: 1px solid var(--border-color); padding: 16px; border-radius: 8px; margin-top: 40px; }
-    .risk-note p { font-size: 13px; color: var(--text-muted); margin: 0; }
-
-    /* ESTILOS DEL MAPA (Tooltips) */
-    .transparent-tooltip { background: transparent !important; border: none !important; box-shadow: none !important; }
-    .transparent-tooltip::before { display: none !important; }
-    .custom-tooltip { padding: 4px 8px; border-radius: 6px; color: white; text-align: center; font-family: sans-serif; box-shadow: 0 2px 4px rgba(0,0,0,0.2); min-width: 90px; }
-    .price-low { background-color: var(--accent-green) !important; }
-    .price-mid { background-color: #f59e0b !important; }
-    .price-high { background-color: #ef4444 !important; }
-    .custom-tooltip b { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .custom-tooltip span { font-size: 13px; font-weight: bold; }
-    /* HEADER */
-
-#topbar{
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  height:65px;
-  background:#fff;
-  border-bottom:1px solid #e5e7eb;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:0 20px;
-  z-index:9999;
-}
-
-.brand{
-  font-size:18px;
-  font-weight:700;
-}
-
-.user-area{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-#userPhoto{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  object-fit:cover;
-  display:none;
-}
-
-.user-data{
-  display:flex;
-  flex-direction:column;
-  text-align:right;
-}
-
-#userName{
-  font-size:14px;
-  font-weight:600;
-}
-
-#userStatus{
-  font-size:12px;
-  color:#6b7280;
-}
-
-#logoutBtn{
-  display:none;
-  border:none;
-  background:#ef4444;
-  color:white;
-  width:36px;
-  height:36px;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-/* Separación para que no tape el contenido */
-
-#home-screen{
-  padding-top:90px !important;
-}
-
-.content-section{
-  padding-top:65px;
-}
+    /* ── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 640px) {
+      #ahorro { flex-direction: column; overflow-y: auto; }
+      #sidebar {
+        width: 100%; min-width: unset;
+        border-right: none; border-bottom: 1px solid var(--border);
+        padding-top: 68px; max-height: none; flex-shrink: 0;
+      }
+      #map-wrap { flex-shrink: 0; height: 50vh; min-height: 250px; }
+      .leyenda { display: none; }
+    }
   </style>
 </head>
 <body>
-  <header id="topbar">
-  <div class="brand">
-    <strong>PricePulse SV</strong>
-  </div>
 
+<!-- TOPBAR -->
+<header id="topbar">
+  <div class="brand"><strong>PricePulse<sup style="font-size:10px;background:#111;color:#fff;padding:1px 5px;border-radius:3px;vertical-align:super;">SV</sup></strong></div>
   <div class="user-area">
-    <img id="userPhoto" src="" alt="Usuario">
-
+    <img id="userPhoto" src="" alt="">
     <div class="user-data">
       <span id="userName">Invitado</span>
       <small id="userStatus">No autenticado</small>
     </div>
-
-    <button id="logoutBtn" onclick="logout()">
+    <button id="logoutBtn" onclick="logout()" title="Cerrar sesión">
       <i class="fas fa-sign-out-alt"></i>
     </button>
   </div>
 </header>
 
-  <section id="home-screen">
-    <div class="logo-container">
-      <h1>PricePulse<span class="badge-sv">SV</span></h1>
-      <p>Tu brújula financiera en San Miguel</p>
+<!-- HOME -->
+<section id="home-screen">
+  <div class="logo-container">
+    <h1>PricePulse<span class="badge-sv">SV</span></h1>
+    <p>Compara precios en San Miguel, El Salvador</p>
+  </div>
+  <div class="menu-grid">
+    <button class="btn-minimal" onclick="showSection('ahorro')">
+      <span>🗺️ &nbsp;Comparar Precios</span>
+      <i class="fas fa-chevron-right"></i>
+    </button>
+    <button class="btn-minimal" onclick="showSection('finanzas')">
+      <span>📈 &nbsp;Guía de Inversión</span>
+      <i class="fas fa-chevron-right"></i>
+    </button>
+    <button id="loginBtn" class="btn-minimal" onclick="window.location.href='login.html'">
+      <span>🔑 &nbsp;Acceder con Google</span>
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+</section>
+
+<!-- MAPA DE PRECIOS -->
+<section id="ahorro" class="content-section">
+
+  <!-- Sidebar búsqueda -->
+  <div id="sidebar">
+    <button class="btn-back" onclick="goHome()"><i class="fas fa-arrow-left"></i> Inicio</button>
+
+    <!-- Barra de búsqueda -->
+    <div id="search-box">
+      <i class="fas fa-search search-icon"></i>
+      <input id="search-input" type="text" placeholder="Buscar producto…" autocomplete="off">
+      <div id="suggestions"></div>
     </div>
-    
-    <div class="menu-grid">
-      <button class="btn-minimal" onclick="showSection('ahorro')">
-        <span>Mapa de Ahorro</span>
-        <i class="fas fa-map-pin"></i>
-      </button>
-      
-      <button class="btn-minimal" onclick="showSection('finanzas')">
-        <span>Guía de Inversión</span>
-        <i class="fas fa-chart-line"></i>
-      </button>
 
-      <button id="loginBtn"
-        class="btn-minimal"
-        onclick="window.location.href='login.html'">
-
-  <span>Acceder</span>
-  <i class="fas fa-sign-in-alt"></i>
-
-</button>
+    <!-- Chips categorías -->
+    <div class="chips-wrap">
+      <span class="cat-chip" data-cat="Canasta Básica">Canasta Básica</span>
+      <span class="cat-chip" data-cat="Lácteos y Frescos">Lácteos</span>
+      <span class="cat-chip" data-cat="Higiene">Higiene</span>
+      <span class="cat-chip" data-cat="Electrónica del Hogar">Electrónica</span>
     </div>
-  </section>
 
-  <section id="ahorro" class="content-section">
-    <button class="btn-back" onclick="goHome()"><i class="fas fa-arrow-left"></i> Volver</button>
+    <!-- Estado vacío -->
+    <div id="empty-state">
+      <div class="empty-icon">🔍</div>
+      <p>Busca un producto o elige una categoría para ver dónde está más barato en San Miguel.</p>
+    </div>
+
+    <!-- Panel comparativo (se inyecta por JS) -->
+    <div id="compare-panel"></div>
+  </div>
+
+  <!-- Mapa -->
+  <div id="map-wrap">
     <div id="map"></div>
-  </section>
-
-  <section id="finanzas" class="content-section">
-    <button class="btn-back" onclick="goHome()"><i class="fas fa-arrow-left"></i> Volver</button>
-    
-    <div class="finance-list">
-      <h2>Guía de Inversión</h2>
-      
-      <h4>Opciones Locales (El Salvador)</h4>
-      
-      <div class="minimal-card">
-        <h3><i class="fas fa-university" style="color: #6b7280;"></i> Depósitos a Plazo Fijo</h3>
-        <p>Ideal para perfiles conservadores. Bancos como <b>Cuscatlán, Agrícola o Davivienda</b> ofrecen tasas anuales que suelen rondar entre el 4% y 6%, dependiendo del monto y el tiempo.</p>
-      </div>
-
-      <div class="minimal-card">
-        <h3><i class="fas fa-users" style="color: #6b7280;"></i> Cooperativas</h3>
-        <p>Instituciones como <b>ACACESVG o COASPAE</b> suelen ofrecer tasas más competitivas que los bancos tradicionales (hasta 7-8% en depósitos a plazo). Requieren que te hagas socio.</p>
-      </div>
-
-      <div class="minimal-card">
-        <h3><i class="fas fa-landmark" style="color: #6b7280;"></i> Mercado Bursátil Local</h3>
-        <p>A través de la <b>Bolsa de Valores de El Salvador (BVES)</b>, puedes invertir en fondos de inversión inmobiliarios o títulos valores de empresas nacionales con montos accesibles.</p>
-      </div>
-
-      <h4>Inversión Internacional</h4>
-
-      <div class="minimal-card">
-        <h3><i class="fas fa-globe" style="color: #6b7280;"></i> Mercado Bursátil Extranjero</h3>
-        <p>Accede a las empresas más grandes del mundo (Apple, Google, Amazon) y ETFs usando brokers regulados:</p>
-        <ul>
-          <li><a href="https://hapi.trade/es" target="_blank" class="broker-link">Hapi:</a> Ideal para latinos, sin comisiones y permite comprar acciones fraccionadas.</li>
-          <li><a href="https://www.xtb.com/lat" target="_blank" class="broker-link">XTB:</a> Muy bueno para análisis técnico y con una plataforma robusta.</li>
-          <li><a href="https://www.interactivebrokers.com/" target="_blank" class="broker-link">Interactive Brokers:</a> El más completo a nivel mundial, ideal para inversores serios y de largo plazo.</li>
-        </ul>
-      </div>
-
-      <div class="risk-note">
-        <p><b>Nota de Riesgo:</b> Toda inversión conlleva riesgo. Investiga a fondo y nunca inviertas dinero destinado para tus necesidades vitales o emergencias.</p>
-      </div>
+    <div class="leyenda">
+      <div><span class="dot" style="background:var(--green)"></span> Precio más bajo</div>
+      <div><span class="dot" style="background:var(--yellow)"></span> Precio intermedio</div>
+      <div><span class="dot" style="background:var(--red)"></span> Precio más alto</div>
+      <div><span class="dot" style="background:#9ca3af"></span> Sin selección</div>
     </div>
-  </section>
+  </div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script>
-    function showSection(id) {
-      document.getElementById('home-screen').style.display = 'none';
-      document.getElementById(id).style.display = 'flex';
-      if(id === 'ahorro' && typeof map !== 'undefined') {
-        setTimeout(() => map.invalidateSize(), 300);
-      }
+</section>
+
+<!-- GUÍA DE INVERSIÓN -->
+<section id="finanzas" class="content-section">
+  <button class="btn-back" onclick="goHome()"><i class="fas fa-arrow-left"></i> Inicio</button>
+  <div class="finance-list">
+    <h2>Guía de Inversión</h2>
+
+    <h4>Opciones Locales (El Salvador)</h4>
+
+    <div class="minimal-card">
+      <h3><i class="fas fa-university" style="color:var(--muted)"></i> Depósitos a Plazo Fijo</h3>
+      <p>Ideal para perfiles conservadores. Bancos como <b>Cuscatlán, Agrícola o Davivienda</b> ofrecen tasas anuales entre el 4% y 6%, dependiendo del monto y el tiempo.</p>
+    </div>
+
+    <div class="minimal-card">
+      <h3><i class="fas fa-users" style="color:var(--muted)"></i> Cooperativas</h3>
+      <p>Instituciones como <b>ACACESVG o COASPAE</b> suelen ofrecer tasas más competitivas (hasta 7-8% en depósitos a plazo). Requieren que te hagas socio.</p>
+    </div>
+
+    <div class="minimal-card">
+      <h3><i class="fas fa-landmark" style="color:var(--muted)"></i> Mercado Bursátil Local</h3>
+      <p>A través de la <b>Bolsa de Valores de El Salvador (BVES)</b>, puedes invertir en fondos inmobiliarios o títulos valores de empresas nacionales con montos accesibles.</p>
+    </div>
+
+    <h4>Inversión Internacional</h4>
+
+    <div class="minimal-card">
+      <h3><i class="fas fa-globe" style="color:var(--muted)"></i> Mercado Bursátil Extranjero</h3>
+      <p>Accede a empresas como Apple, Google o Amazon usando brokers regulados:</p>
+      <ul>
+        <li><a href="https://hapi.trade/es" target="_blank" class="broker-link">Hapi</a> — Sin comisiones, ideal para latinos, acciones fraccionadas.</li>
+        <li><a href="https://www.xtb.com/lat" target="_blank" class="broker-link">XTB</a> — Plataforma robusta para análisis técnico.</li>
+        <li><a href="https://www.interactivebrokers.com/" target="_blank" class="broker-link">Interactive Brokers</a> — El más completo a nivel mundial.</li>
+      </ul>
+    </div>
+
+    <div class="risk-note">
+      <p><b>Nota de Riesgo:</b> Toda inversión conlleva riesgo. Investiga a fondo y nunca inviertas dinero destinado para necesidades vitales o emergencias.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LEAFLET -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="script.js"></script>
+
+<!-- NAVEGACIÓN -->
+<script>
+  function showSection(id) {
+    document.getElementById('home-screen').style.display = 'none';
+    document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+    const sec = document.getElementById(id);
+    sec.style.display = 'flex';
+    if (id === 'ahorro') {
+      document.body.classList.add('map-open');
+      setTimeout(() => { map.invalidateSize(); initBusqueda(); }, 200);
     }
-    function goHome() {
-      document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
-      document.getElementById('home-screen').style.display = 'flex';
-    }
-  </script>
-  <script src="script.js"></script>
-  <script type="module">
+  }
+  function goHome() {
+    document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+    document.getElementById('home-screen').style.display = 'flex';
+    document.body.classList.remove('map-open');
+  }
+</script>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+<!-- FIREBASE AUTH -->
+<script type="module">
+import { initializeApp }      from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut }
+                               from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDUpRungMl6Qt-AwatwnjRfMWtOmHZm_7Q",
@@ -321,61 +441,27 @@ const firebaseConfig = {
   appId: "1:802853058185:web:6f7b62a86c20fdc7863858"
 };
 
-const app = initializeApp(firebaseConfig);
+const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 onAuthStateChanged(auth, (user) => {
-
-  if(user){
-
-    document.getElementById("userPhoto").src =
-      user.photoURL || "";
-
-    document.getElementById("userPhoto").style.display =
-      "block";
-
-    document.getElementById("userName").textContent =
-      user.displayName || "Usuario";
-
-    document.getElementById("userStatus").textContent =
-      user.email || "";
-
-    document.getElementById("logoutBtn").style.display =
-      "block";
-
-    const loginBtn =
-      document.getElementById("loginBtn");
-
-    if(loginBtn){
-      loginBtn.style.display = "none";
-    }
-
-  }else{
-
-    document.getElementById("userPhoto").style.display =
-      "none";
-
-    document.getElementById("userName").textContent =
-      "Invitado";
-
-    document.getElementById("userStatus").textContent =
-      "No autenticado";
-
-    document.getElementById("logoutBtn").style.display =
-      "none";
-
+  if (user) {
+    document.getElementById("userPhoto").src = user.photoURL || "";
+    document.getElementById("userPhoto").style.display = "block";
+    document.getElementById("userName").textContent = user.displayName || "Usuario";
+    document.getElementById("userStatus").textContent = user.email || "";
+    document.getElementById("logoutBtn").style.display = "block";
+    const lb = document.getElementById("loginBtn");
+    if (lb) lb.style.display = "none";
+  } else {
+    document.getElementById("userPhoto").style.display = "none";
+    document.getElementById("userName").textContent = "Invitado";
+    document.getElementById("userStatus").textContent = "No autenticado";
+    document.getElementById("logoutBtn").style.display = "none";
   }
-
 });
 
-window.logout = async () => {
-
-  await signOut(auth);
-
-  location.reload();
-
-};
-
+window.logout = async () => { await signOut(auth); location.reload(); };
 </script>
 
 </body>
