@@ -6,7 +6,7 @@ const tiendas = [
   { id: "walmart",    nombre: "Walmart",           lat: 13.4511, lng: -88.1596 },
   { id: "selectos",   nombre: "Super Selectos",    lat: 13.4793, lng: -88.1779 },
   { id: "despensa",   nombre: "Despensa Don Juan", lat: 13.4825, lng: -88.1803 },
-  { id: "pricesmart", nombre: "PriceSmart",        lat: 13.4740, lng: -88.1970 },
+  { id: "pricesmart", nombre: "PriceSmart",        lat: 13.4863, lng: -88.1617 },
   { id: "josue",      nombre: "Comercial Josué",   lat: 13.4803, lng: -88.1786 }
 ];
 
