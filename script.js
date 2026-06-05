@@ -3,11 +3,11 @@
 // ==========================================
 
 const tiendas = [
-  { id: "walmart",   nombre: "Walmart",           lat: 13.4682, lng: -88.1714 },
-  { id: "selectos",  nombre: "Super Selectos",    lat: 13.4735, lng: -88.1765 },
-  { id: "despensa",  nombre: "Despensa Don Juan", lat: 13.4765, lng: -88.1820 },
-  { id: "pricesmart",nombre: "PriceSmart",        lat: 13.4880, lng: -88.1790 },
-  { id: "josue",     nombre: "Super Josué",       lat: 13.4850, lng: -88.1640 }
+  { id: "walmart",    nombre: "Walmart",           lat: 13.4511, lng: -88.1596 },
+  { id: "selectos",   nombre: "Super Selectos",    lat: 13.4793, lng: -88.1779 },
+  { id: "despensa",   nombre: "Despensa Don Juan", lat: 13.4825, lng: -88.1803 },
+  { id: "pricesmart", nombre: "PriceSmart",        lat: 13.4740, lng: -88.1970 },
+  { id: "josue",      nombre: "Comercial Josué",   lat: 13.4803, lng: -88.1786 }
 ];
 
 const productos = [
