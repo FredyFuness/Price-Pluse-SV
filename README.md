@@ -77,3 +77,11 @@ Price-Pluse-SV/
 | Lácteos y Frescos | Leche, huevos, queso, crema, pollo, carne |
 | Higiene | Shampoo, jabón, pasta dental, papel higiénico, detergente |
 | Electrónica del Hogar | Focos LED, pilas, extensiones, ventilador, cargador |
+
+## Estado de los datos y alcance
+Los productos, precios y coordenadas están definidos directamente en `script.js`. No existe una conexión implementada a inventarios o precios en tiempo real de las tiendas. Los valores deben tratarse como datos de demostración y comprobarse antes de utilizarlos para decidir una compra.
+
+La comparación, clasificación por precio y presentación en mapa se ejecutan en el navegador. La autenticación opcional requiere una configuración válida de Firebase y los dominios autorizados correspondientes.
+
+## Qué demuestra este proyecto
+Manipulación del DOM, búsqueda y filtrado de datos, ordenamiento de precios e integración de mapas con Leaflet. Para evolucionar hacia un servicio real se necesita una fuente verificable, fecha de actualización y mantenimiento de ubicaciones y productos.
